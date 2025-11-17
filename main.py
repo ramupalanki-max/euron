@@ -19,6 +19,12 @@ class eurondata(BaseModel):
     phone: int
     city: str
     course: str
+
+class EuronPartialUpdate(BaseModel):
+    name: str | None = None
+    phone: int | None = None
+    city: str | None = None
+    course: str | None = None
     
 @app.post("/euron/insert")    
 async def euron_data_insert_helper(data:eurondata):
@@ -62,7 +68,7 @@ async def delete_euron_data(item_id: str):
 
 
 @app.put("/euron/update/{item_id}")
-async def full_update_euron_data(item_id: str, data: EuronData):
+async def full_update_euron_data(item_id: str, data: eurondata):
     try:
         obj_id = ObjectId(item_id)
     except:
