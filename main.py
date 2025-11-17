@@ -59,3 +59,46 @@ async def delete_euron_data(item_id: str):
         raise HTTPException(status_code=404, detail="Item not found")
 
     return {"status": "success", "message": f"Item {item_id} deleted"}
+
+
+@app.put("/euron/update/{item_id}")
+async def full_update_euron_data(item_id: str, data: EuronData):
+    try:
+        obj_id = ObjectId(item_id)
+    except:
+        raise HTTPException(status_code=400, detail="Invalid ID format")
+
+    result = await euron_data.update_one(
+        {"_id": obj_id},
+        {"$set": data.dict()}
+    )
+
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Item not found")
+
+    return {"status": "success", "message": "Full update completed"}
+
+# --------------------
+# PARTIAL UPDATE API (PATCH)
+# --------------------
+@app.patch("/euron/update/partial/{item_id}")
+async def partial_update_euron_data(item_id: str, data: EuronPartialUpdate):
+    try:
+        obj_id = ObjectId(item_id)
+    except:
+        raise HTTPException(status_code=400, detail="Invalid ID format")
+
+    update_data = {k: v for k, v in data.dict().items() if v is not None}
+
+    if not update_data:
+        raise HTTPException(status_code=400, detail="No valid fields provided for update")
+
+    result = await euron_data.update_one(
+        {"_id": obj_id},
+        {"$set": update_data}
+    )
+
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Item not found")
+
+    return {"status": "success", "message": "Partial update completed"}
