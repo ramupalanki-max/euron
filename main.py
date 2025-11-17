@@ -46,3 +46,16 @@ async def show_euron_data():
     async for document in cursor:
         iterms.append(euron_helper(document))
     return iterms
+
+@app.delete("/euron/delete/{item_id}")
+async def delete_euron_data(item_id: str):
+    try:
+        obj_id = ObjectId(item_id)
+    except:
+        raise HTTPException(status_code=400, detail="Invalid ID format")
+    
+    result = await euron_data.delete_one({"_id": obj_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Item not found")
+
+    return {"status": "success", "message": f"Item {item_id} deleted"}
