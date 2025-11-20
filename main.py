@@ -45,13 +45,23 @@ async def get_euron_data():
         iterms.append(euron_helper(document))
     return iterms
 
-@app.get("/euron/showdata")
-async def show_euron_data():
-    iterms = []
-    cursor = euron_data.find({})
-    async for document in cursor:
-        iterms.append(euron_helper(document))
-    return iterms
+
+@app.get("/euron/showdata/{item_id}")
+async def show_single_euron_data(item_id: str):
+    try:
+        obj_id = ObjectId(item_id)
+    except:
+        raise HTTPException(status_code=400, detail="Invalid ID format")
+
+    document = await euron_data.find_one({"_id": obj_id})
+
+    if not document:
+        raise HTTPException(status_code=404, detail="Item not found")
+
+    return euron_helper(document)
+
+
+
 
 @app.delete("/euron/delete/{item_id}")
 async def delete_euron_data(item_id: str):
