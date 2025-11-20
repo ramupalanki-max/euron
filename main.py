@@ -16,13 +16,13 @@ app = FastAPI()
 
 class eurondata(BaseModel):
     name: str
-    phone: int
+    phone: str
     city: str
     course: str
 
 class EuronPartialUpdate(BaseModel):
     name: str | None = None
-    phone: int | None = None
+    phone: str | None = None
     city: str | None = None
     course: str | None = None
     
