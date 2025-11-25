@@ -45,6 +45,14 @@ async def get_euron_data():
         iterms.append(euron_helper(document))
     return iterms
 
+@app.get("/euron/showalldata")
+async def get_euron_data():
+    iterms = []
+    cursor = euron_data.find({})
+    async for document in cursor:
+        iterms.append(euron_helper(document))
+    return iterms
+
 
 @app.get("/euron/showdata/{item_id}")
 async def show_single_euron_data(item_id: str):
